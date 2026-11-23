@@ -44,5 +44,14 @@ if (
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
+
+// Final gate right before write: an empty line or one over 200 chars must
+// never ship, even if the earlier check is ever edited away.
+if (LINE.trim().length === 0 || LINE.length > 200) {
+  throw new Error(
+    `Refusing to write entry line: must be 1-200 chars, got ${LINE.length}.`,
+  );
+}
+
 writeFileSync(join(outDir, "entry.txt"), LINE + "\n", "utf8");
 console.log(LINE);
